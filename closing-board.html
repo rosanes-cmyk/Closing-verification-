@@ -1,211 +1,389 @@
 <title>Recorded or Not</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root{
-    --void:#0B0D10;
-    --panel:#15181D;
-    --panel2:#1D2127;
-    --line:#2E343C;
-    --paper:#F3F5F7;
-    --dim:#8A949E;
-    --dimmer:#5D666F;
-    --late:#FF3B30;
-    --wait:#FFB400;
-    --good:#22C55E;
-    --act:#3B7BFF;
-    --heavy: Anton, Impact, Haettenschweiler, "Arial Narrow Bold", "Franklin Gothic Bold", sans-serif;
-    --sans: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
-    --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    color-scheme:light;
+    --bg:#F5F7F9;
+    --surface:#FFFFFF;
+    --surface-2:#F1F4F7;
+    --ink:#131820;
+    --ink-2:#3E4853;
+    --muted:#69737F;
+    --line:#E3E7EC;
+    --line-2:#D2D8E0;
+
+    --accent:#3557D8;
+    --accent-hover:#2A46B8;
+    --accent-ink:#FFFFFF;
+    --accent-soft:#E9EEFC;
+    --accent-line:#C5D2F6;
+
+    --late:#BE3A2B;
+    --late-ink:#FFFFFF;
+    --late-soft:#FBECEA;
+    --late-line:#EFCCC7;
+
+    --wait:#8F6209;
+    --wait-soft:#FBF3E1;
+    --wait-line:#EBDDBB;
+
+    --good:#15724A;
+    --good-ink:#FFFFFF;
+    --good-soft:#E6F4EC;
+    --good-line:#C2E2D1;
+
+    --shadow:0 1px 2px rgba(19,24,32,.05), 0 3px 10px rgba(19,24,32,.045);
+    --r:10px;
+    --r-sm:7px;
+    --sans:"Instrument Sans","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
   }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      color-scheme:dark;
+      --bg:#0E1216;
+      --surface:#161B22;
+      --surface-2:#1D242C;
+      --ink:#E8EDF3;
+      --ink-2:#B9C3CE;
+      --muted:#8A95A2;
+      --line:#232B34;
+      --line-2:#303944;
+
+      --accent:#7A99FF;
+      --accent-hover:#93ADFF;
+      --accent-ink:#0A1024;
+      --accent-soft:#18213B;
+      --accent-line:#2B3A66;
+
+      --late:#F0897F;
+      --late-ink:#2A0D08;
+      --late-soft:#291613;
+      --late-line:#492520;
+
+      --wait:#E3B562;
+      --wait-soft:#261E10;
+      --wait-line:#443619;
+
+      --good:#5FC994;
+      --good-ink:#062017;
+      --good-soft:#112620;
+      --good-line:#1E4433;
+
+      --shadow:0 1px 2px rgba(0,0,0,.42), 0 3px 12px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --bg:#0E1216;
+    --surface:#161B22;
+    --surface-2:#1D242C;
+    --ink:#E8EDF3;
+    --ink-2:#B9C3CE;
+    --muted:#8A95A2;
+    --line:#232B34;
+    --line-2:#303944;
+
+    --accent:#7A99FF;
+    --accent-hover:#93ADFF;
+    --accent-ink:#0A1024;
+    --accent-soft:#18213B;
+    --accent-line:#2B3A66;
+
+    --late:#F0897F;
+    --late-ink:#2A0D08;
+    --late-soft:#291613;
+    --late-line:#492520;
+
+    --wait:#E3B562;
+    --wait-soft:#261E10;
+    --wait-line:#443619;
+
+    --good:#5FC994;
+    --good-ink:#062017;
+    --good-soft:#112620;
+    --good-line:#1E4433;
+
+    --shadow:0 1px 2px rgba(0,0,0,.42), 0 3px 12px rgba(0,0,0,.28);
+  }
+
   *{box-sizing:border-box}
-  body{margin:0;background:var(--void);color:var(--paper);font-family:var(--sans);font-size:15px}
-  .wrap{max-width:1060px;margin:0 auto;padding-block:0 90px;padding-inline:16px}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:var(--sans);font-size:15px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding-block:0 80px;padding-inline:20px}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
 
-  /* top bar */
-  .bar{
+  /* ---------- top bar ---------- */
+  .topbar{
     display:flex;align-items:center;gap:12px;flex-wrap:wrap;
-    padding-block:14px;border-bottom:3px solid var(--paper);
+    padding-block:18px 16px;border-bottom:1px solid var(--line);margin-bottom:26px;
   }
-  .brand{font-family:var(--heavy);font-size:30px;letter-spacing:.01em;line-height:1}
-  .brand span{color:var(--late)}
-  .live{
-    display:inline-flex;align-items:center;gap:7px;border:2px solid var(--line);
-    padding:5px 9px;font-size:11px;font-weight:800;letter-spacing:.08em;
-    text-transform:uppercase;color:var(--dim);white-space:nowrap;
+  .mark{font-size:16px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+  .mark i{font-style:normal;color:var(--muted);font-weight:500}
+  .sync{
+    display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+    color:var(--muted);padding:4px 10px 4px 8px;border:1px solid var(--line);
+    border-radius:999px;background:var(--surface);white-space:nowrap;
   }
-  .dot{width:8px;height:8px;background:currentColor;flex:0 0 8px}
-  .live[data-m="live"]{color:var(--act);border-color:var(--act)}
-  .live[data-m="live"] .dot{animation:beat 2s ease-in-out infinite}
-  .live[data-m="wait"]{color:var(--wait);border-color:var(--wait)}
-  .live[data-m="off"]{color:var(--late);border-color:var(--late)}
-  @keyframes beat{0%,100%{opacity:1}50%{opacity:.25}}
+  .sync .dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex:0 0 7px}
+  .sync[data-m="live"]{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft)}
+  .sync[data-m="live"] .dot{animation:beat 2.4s ease-in-out infinite}
+  .sync[data-m="off"]{color:var(--late);border-color:var(--late-line);background:var(--late-soft)}
+  @keyframes beat{0%,100%{opacity:1}50%{opacity:.3}}
 
-  .you{display:flex;align-items:center;gap:8px;margin-left:auto;font-size:12px;
-    font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
-  .you input{
-    font:inherit;font-family:var(--sans);font-size:14px;font-weight:400;letter-spacing:0;
-    text-transform:none;background:var(--panel);color:var(--paper);
-    border:2px solid var(--line);border-radius:0;padding:7px 10px;width:150px;
+  .topbar-end{display:flex;align-items:center;gap:10px;margin-left:auto;flex-wrap:wrap}
+  .who{display:flex;align-items:center;gap:8px}
+  .who span{font-size:12px;font-weight:600;color:var(--muted)}
+  .who input{
+    font:500 13.5px/1 var(--sans);background:var(--surface);color:var(--ink);
+    border:1px solid var(--line-2);border-radius:var(--r-sm);padding:9px 11px;width:150px;
   }
-  .you input:focus{border-color:var(--act);outline:none}
+  .who input::placeholder{color:var(--muted);font-weight:400}
+  .who input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 
-  /* verdict */
-  .verdict{
-    font-family:var(--heavy);font-size:clamp(30px,7vw,58px);line-height:.95;
-    letter-spacing:.005em;margin:22px 0 4px;text-transform:uppercase;text-wrap:balance;
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    font-family:var(--sans);font-size:13.5px;font-weight:600;letter-spacing:-.005em;line-height:1;
+    padding:10px 15px;border:1px solid transparent;border-radius:var(--r-sm);
+    cursor:pointer;white-space:nowrap;
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
   }
-  .verdict.hot{color:var(--late)}
-  .verdict.ok{color:var(--good)}
-  .verdict-sub{color:var(--dim);font-size:14px;font-weight:600;margin:0 0 20px;max-width:62ch}
-
-  /* tiles */
-  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px}
-  .tile{background:var(--panel);border-left:8px solid var(--line);padding:12px 14px 10px}
-  .tile b{display:block;font-family:var(--heavy);font-size:44px;line-height:.9;font-variant-numeric:tabular-nums}
-  .tile em{font-style:normal;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--dim)}
-  .tile.late{border-left-color:var(--late)} .tile.late b{color:var(--late)}
-  .tile.wait{border-left-color:var(--wait)} .tile.wait b{color:var(--wait)}
-  .tile.good{border-left-color:var(--good)} .tile.good b{color:var(--good)}
-
-  /* buttons */
-  button{font:inherit;cursor:pointer;border-radius:0}
-  .b{
-    background:var(--act);color:#fff;border:none;padding:11px 16px;
-    font-weight:800;font-size:14px;letter-spacing:.02em;text-transform:uppercase;
+  .btn:active{transform:translateY(.5px)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btn-primary{background:var(--accent);color:var(--accent-ink)}
+  .btn-primary:hover:not(:disabled){background:var(--accent-hover)}
+  .btn-good{background:var(--good);color:var(--good-ink)}
+  .btn-good:hover:not(:disabled){filter:brightness(1.08)}
+  .btn-quiet{background:var(--surface);border-color:var(--line-2);color:var(--ink-2)}
+  .btn-quiet:hover:not(:disabled){border-color:var(--muted);color:var(--ink)}
+  .btn-danger{background:transparent;border-color:var(--late-line);color:var(--late)}
+  .btn-danger:hover:not(:disabled){background:var(--late-soft)}
+  .btn-sm{padding:8px 12px;font-size:12.5px}
+  .btn-text{
+    background:none;border:none;padding:4px 0;cursor:pointer;
+    font-family:var(--sans);font-size:12.5px;font-weight:500;color:var(--muted);
+    text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line-2);
   }
-  .b:hover{filter:brightness(1.12)}
-  .b.go{background:var(--good);color:#04220F}
-  .b.hot{background:var(--late)}
-  .b.ghost{background:transparent;color:var(--paper);border:2px solid var(--line);padding:9px 14px}
-  .b.ghost:hover{border-color:var(--paper)}
-  .b.sm{padding:8px 11px;font-size:12px}
-  .b:disabled{opacity:.35;cursor:not-allowed;filter:none}
-  :focus-visible{outline:3px solid var(--act);outline-offset:2px}
+  .btn-text:hover{color:var(--ink)}
+  .btn-text[data-armed="1"]{color:var(--late);text-decoration-color:var(--late-line)}
 
-  .toprow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
-  .tabs{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
-  .tabs button{
-    background:transparent;border:2px solid transparent;color:var(--dim);
-    padding:8px 11px;font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;
+  /* ---------- summary ---------- */
+  .summary{margin-bottom:20px}
+  .summary h1{
+    font-size:clamp(21px,3.2vw,28px);font-weight:700;letter-spacing:-.025em;
+    line-height:1.22;margin:0 0 7px;text-wrap:balance;
   }
-  .tabs button[aria-pressed="true"]{background:var(--panel);border-color:var(--line);color:var(--paper)}
+  .summary h1 .n-late{color:var(--late)}
+  .summary h1 .n-wait{color:var(--wait)}
+  .summary h1 .n-good{color:var(--good)}
+  .summary p{margin:0;color:var(--muted);font-size:14px;max-width:60ch}
 
-  /* add */
-  .add{background:var(--panel);border-left:8px solid var(--act);padding:14px;margin-bottom:18px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
-  .f label{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--dim);margin-bottom:4px;text-transform:uppercase}
-  .f input,.f select{
-    font:inherit;width:100%;padding:9px 10px;background:var(--panel2);color:var(--paper);
-    border:2px solid var(--line);
+  /* ---------- filter tiles ---------- */
+  .filters{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:20px}
+  .seg{
+    position:relative;text-align:left;background:var(--surface);
+    border:1px solid var(--line);border-radius:var(--r);padding:13px 14px 12px 16px;
+    cursor:pointer;font-family:var(--sans);color:var(--ink);overflow:hidden;
+    transition:border-color .15s ease,box-shadow .15s ease;
   }
-  .f input:focus,.f select:focus{border-color:var(--act);outline:none}
-  .add .go-row{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
-
-  /* rows */
-  .row{background:var(--panel);border-left:8px solid var(--line);margin-bottom:8px}
-  .row[data-s="issue"]{border-left-color:var(--late);background:#1C1113}
-  .row[data-s="funded"],.row[data-s="escrow"]{border-left-color:var(--wait)}
-  .row[data-s="recorded"]{border-left-color:var(--good)}
-  .row[data-s="closed"]{border-left-color:var(--good);opacity:.62}
-  .head{display:grid;grid-template-columns:1fr auto;gap:6px 16px;padding:14px;align-items:center}
-  .addr{font-family:var(--heavy);font-size:clamp(20px,3.2vw,28px);line-height:1;text-transform:uppercase}
-  .meta{color:var(--dim);font-size:12.5px;font-weight:600;margin-top:6px;font-variant-numeric:tabular-nums}
-  .meta b{color:var(--paper);font-weight:800}
-  .flag{font-family:var(--heavy);font-size:19px;text-transform:uppercase;white-space:nowrap;justify-self:end;line-height:1}
-  .flag[data-s="issue"]{color:var(--late)}
-  .flag[data-s="funded"],.flag[data-s="escrow"]{color:var(--wait)}
-  .flag[data-s="recorded"],.flag[data-s="closed"]{color:var(--good)}
-
-  .act{
-    display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;
-    padding:12px 14px 14px;border-top:2px solid var(--line);
+  .seg::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--line-2)}
+  .seg.s-late::before{background:var(--late)}
+  .seg.s-wait::before{background:var(--wait)}
+  .seg.s-good::before{background:var(--good)}
+  .seg:hover{border-color:var(--line-2)}
+  .seg[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .seg b{
+    display:block;font-size:25px;font-weight:700;letter-spacing:-.03em;line-height:1.1;
+    font-variant-numeric:tabular-nums;
   }
-  .act .f{flex:1 1 130px;min-width:120px}
-  .act .f.narrow{flex:0 1 150px}
-  .doc{font-family:var(--mono);font-size:14px;letter-spacing:.03em;font-weight:600}
-  .warn{color:var(--late);font-weight:700;font-size:13px;padding:0 14px 12px;margin:0}
-  .stamped{padding:0 14px 14px;font-size:13.5px;font-weight:700;color:var(--good)}
-  .stamped .num{font-family:var(--mono);font-size:15px;letter-spacing:.02em}
-  .stamped small{display:block;color:var(--dim);font-weight:600;margin-top:3px;font-family:var(--sans)}
-  .log{padding:0 14px 14px}
-  .log summary{cursor:pointer;color:var(--dim);font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
-  .log ol{list-style:none;margin:8px 0 0;padding:0;font-size:12.5px;color:var(--dim);font-variant-numeric:tabular-nums}
-  .log li{padding:4px 0;border-bottom:1px solid var(--line)}
-  .log li time{color:var(--dimmer);font-family:var(--mono);font-size:11.5px}
-  .rm{background:none;border:none;color:var(--dimmer);font-size:12px;font-weight:700;padding:0;text-decoration:underline}
-  .rm[data-armed="1"]{color:var(--late)}
+  .seg.s-late b{color:var(--late)} .seg.s-wait b{color:var(--wait)} .seg.s-good b{color:var(--good)}
+  .seg span{
+    display:block;margin-top:3px;font-size:11.5px;font-weight:600;
+    letter-spacing:.02em;color:var(--muted);
+  }
 
-  .empty{border:3px dashed var(--line);padding:34px 18px;text-align:center}
-  .empty p{font-family:var(--heavy);font-size:clamp(22px,4vw,34px);text-transform:uppercase;margin:0 0 6px}
-  .empty .sub{font-family:var(--sans);font-size:14px;font-weight:600;color:var(--dim);text-transform:none;margin:0 auto 18px;max-width:48ch}
-  .empty .row-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  /* ---------- toolbar ---------- */
+  .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
 
-  .foot{margin-top:26px;border-top:2px solid var(--line);padding-top:12px;
-    color:var(--dimmer);font-size:12px;font-weight:600;line-height:1.7}
-  .foot b{color:var(--dim);font-weight:800}
+  /* ---------- add panel ---------- */
+  .panel{
+    background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);
+    border-radius:var(--r);box-shadow:var(--shadow);padding:18px;margin-bottom:18px;
+  }
+  .panel h2{margin:0 0 14px;font-size:14px;font-weight:700;letter-spacing:-.01em}
+  .fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px}
+  .field label{
+    display:block;font-size:11px;font-weight:600;letter-spacing:.05em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:5px;
+  }
+  .field input,.field select{
+    width:100%;font-family:var(--sans);font-size:13.5px;font-weight:500;
+    padding:9px 10px;background:var(--surface);color:var(--ink);
+    border:1px solid var(--line-2);border-radius:var(--r-sm);
+  }
+  .field select{cursor:pointer}
+  .field input:focus,.field select:focus{
+    outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  .field input.mono{font-family:var(--mono);font-size:13.5px;letter-spacing:.01em}
+  .panel-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+  .warn{
+    margin:12px 0 0;padding:10px 12px;font-size:13px;font-weight:500;
+    color:var(--late);background:var(--late-soft);border:1px solid var(--late-line);
+    border-radius:var(--r-sm);
+  }
+
+  /* ---------- deal cards ---------- */
+  .ledger{display:flex;flex-direction:column;gap:10px}
+  .deal{
+    position:relative;background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;
+  }
+  .deal::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--line-2)}
+  .deal[data-s="issue"]::before{background:var(--late)}
+  .deal[data-s="funded"]::before,.deal[data-s="escrow"]::before{background:var(--wait)}
+  .deal[data-s="recorded"]::before,.deal[data-s="closed"]::before{background:var(--good)}
+  .deal[data-s="closed"]{opacity:.72}
+
+  .deal-head{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    gap:14px;padding:16px 18px 14px 20px;
+  }
+  .addr{margin:0;font-size:16.5px;font-weight:650;letter-spacing:-.015em;line-height:1.35}
+  .meta{
+    display:flex;flex-wrap:wrap;gap:3px 16px;margin-top:7px;
+    font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;
+  }
+  .meta b{color:var(--ink-2);font-weight:600}
+  .pill{
+    display:inline-flex;align-items:center;gap:5px;flex:0 0 auto;
+    font-size:11px;font-weight:700;letter-spacing:.045em;text-transform:uppercase;
+    padding:5px 10px;border-radius:999px;border:1px solid;white-space:nowrap;
+  }
+  .pill[data-s="issue"]{color:var(--late);background:var(--late-soft);border-color:var(--late-line)}
+  .pill[data-s="funded"],.pill[data-s="escrow"]{color:var(--wait);background:var(--wait-soft);border-color:var(--wait-line)}
+  .pill[data-s="recorded"],.pill[data-s="closed"]{color:var(--good);background:var(--good-soft);border-color:var(--good-line)}
+
+  .deal-body{padding:0 18px 16px 20px;border-top:1px solid var(--line);padding-top:15px}
+  .deal-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:14px}
+
+  .stamp{
+    margin:0 18px 0 20px;padding:12px 14px;background:var(--good-soft);
+    border:1px solid var(--good-line);border-radius:var(--r-sm);
+  }
+  .stamp .docno{font-family:var(--mono);font-size:14.5px;font-weight:600;color:var(--good);letter-spacing:.01em}
+  .stamp .on{font-size:13px;font-weight:600;color:var(--ink-2);margin-left:8px}
+  .stamp .by{display:block;margin-top:5px;font-size:12.5px;color:var(--muted)}
+
+  .deal-foot{
+    display:flex;align-items:flex-start;justify-content:space-between;gap:14px;
+    padding:12px 18px 13px 20px;border-top:1px solid var(--line);margin-top:15px;
+  }
+  .deal-foot.tight{margin-top:0}
+  .log{flex:1;min-width:0}
+  .log summary{
+    cursor:pointer;list-style:none;font-size:12.5px;font-weight:600;color:var(--muted);
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .log summary::-webkit-details-marker{display:none}
+  .log summary::before{content:"▸";font-size:10px;transition:transform .15s ease}
+  .log[open] summary::before{transform:rotate(90deg)}
+  .log summary:hover{color:var(--ink)}
+  .log ol{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:1px}
+  .log li{
+    padding:7px 10px;background:var(--surface-2);border-radius:5px;
+    font-size:12.5px;color:var(--ink-2);
+  }
+  .log li time{
+    display:block;font-family:var(--mono);font-size:11px;color:var(--muted);
+    margin-bottom:2px;letter-spacing:-.01em;
+  }
+
+  /* ---------- empty ---------- */
+  .empty{
+    background:var(--surface);border:1px dashed var(--line-2);border-radius:var(--r);
+    padding:40px 24px;text-align:center;
+  }
+  .empty h2{margin:0 0 6px;font-size:17px;font-weight:650;letter-spacing:-.015em}
+  .empty p{margin:0 auto 18px;max-width:46ch;font-size:13.5px;color:var(--muted)}
+  .empty-actions{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}
+
+  /* ---------- footer ---------- */
+  .foot{
+    margin-top:26px;padding-top:16px;border-top:1px solid var(--line);
+    font-size:12.5px;color:var(--muted);line-height:1.65;
+  }
+  .foot b{color:var(--ink-2);font-weight:600}
 
   .hidden{display:none!important}
   .toast{
-    position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--paper);color:#0B0D10;
-    padding:12px 18px;font-weight:800;font-size:14px;z-index:60;max-width:90vw;text-align:center;
+    position:fixed;left:50%;bottom:24px;transform:translateX(-50%);
+    background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:999px;
+    font-size:13.5px;font-weight:600;z-index:60;max-width:calc(100vw - 40px);
+    text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.25);
   }
-  @keyframes bump{from{box-shadow:inset 0 0 0 2000px rgba(59,123,255,.20)}to{box-shadow:inset 0 0 0 2000px rgba(59,123,255,0)}}
-  .row.bump{animation:bump 1.8s ease-out}
+  @keyframes bump{from{background:var(--accent-soft)}to{background:var(--surface)}}
+  .deal.bump{animation:bump 1.9s ease-out}
   @media (prefers-reduced-motion:reduce){
-    .row.bump{animation:none;outline:2px solid var(--act);outline-offset:-2px}
-    .live[data-m="live"] .dot{animation:none}
+    .deal.bump{animation:none;border-color:var(--accent)}
+    .sync[data-m="live"] .dot{animation:none}
+    .btn,.seg{transition:none}
   }
-  @media (max-width:620px){
-    .tiles{grid-template-columns:1fr 1fr}
-    .tiles .tile:last-child{grid-column:span 2}
-    .head{grid-template-columns:1fr}
-    .flag{justify-self:start}
-    .you{margin-left:0;width:100%}
-    .you input{flex:1;width:auto}
+  @media (max-width:720px){
+    .filters{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:560px){
+    .wrap{padding-inline:16px}
+    .topbar-end{width:100%;margin-left:0}
+    .who{flex:1}
+    .who input{flex:1;width:auto;min-width:0}
+    .deal-head{flex-direction:column;gap:10px}
+    .pill{align-self:flex-start}
   }
 </style>
 
 <div class="wrap">
 
-  <div class="bar">
-    <div class="brand">RECORDED<span>?</span></div>
-    <div class="live" id="live" data-m="wait"><span class="dot"></span><span id="liveTxt">Connecting</span></div>
-    <div class="you">
-      <label for="me">You</label>
-      <input id="me" type="text" placeholder="your name" autocomplete="off">
-      <button class="b sm hidden" id="dl" type="button">Download board</button>
+  <header class="topbar">
+    <div class="mark">Recorded<i>?</i></div>
+    <div class="sync" id="live" data-m="wait"><span class="dot"></span><span id="liveTxt">Connecting</span></div>
+    <div class="topbar-end">
+      <label class="who" for="me"><span>You</span><input id="me" type="text" placeholder="your name" autocomplete="off"></label>
+      <button class="btn btn-quiet btn-sm hidden" id="dl" type="button">Export .xlsx</button>
     </div>
+  </header>
+
+  <section class="summary">
+    <h1 id="verdict">Loading the board</h1>
+    <p id="vsub">Funded is not closed. Signed is not closed. Recorded is closed.</p>
+  </section>
+
+  <nav class="filters" id="filters" aria-label="Filter closings">
+    <button class="seg" type="button" data-f="all" aria-pressed="true"><b id="cAll">0</b><span>All closings</span></button>
+    <button class="seg s-late" type="button" data-f="late" aria-pressed="false"><b id="cLate">0</b><span>Late, not recorded</span></button>
+    <button class="seg s-wait" type="button" data-f="waiting" aria-pressed="false"><b id="cWait">0</b><span>Waiting on recording</span></button>
+    <button class="seg s-good" type="button" data-f="recorded" aria-pressed="false"><b id="cGood">0</b><span>Recorded</span></button>
+  </nav>
+
+  <div class="toolbar">
+    <button class="btn btn-primary" id="addBtn" type="button">Add closing</button>
   </div>
 
-  <h1 class="verdict" id="verdict">LOADING THE BOARD</h1>
-  <p class="verdict-sub" id="vsub">Funded is not closed. Signed is not closed. Recorded is closed.</p>
-
-  <div class="tiles">
-    <div class="tile late"><b id="tLate">0</b><em>Late, not recorded</em></div>
-    <div class="tile wait"><b id="tWait">0</b><em>Waiting on recording</em></div>
-    <div class="tile good"><b id="tGood">0</b><em>Recorded</em></div>
-  </div>
-
-  <div class="toprow">
-    <button class="b" id="addBtn" type="button">+ Add closing</button>
-    <div class="tabs" id="tabs">
-      <button type="button" data-f="all" aria-pressed="true">All</button>
-      <button type="button" data-f="hot" aria-pressed="false">Hot</button>
-      <button type="button" data-f="open" aria-pressed="false">Not recorded</button>
-      <button type="button" data-f="done" aria-pressed="false">Recorded</button>
-    </div>
-  </div>
-
-  <div class="add hidden" id="addPanel">
-    <div class="grid">
-      <div class="f"><label for="n-addr">Address</label><input id="n-addr" placeholder="1420 Bayshore Ave"></div>
-      <div class="f"><label for="n-owner">Owner (one name)</label><input id="n-owner" placeholder="who confirms it"></div>
-      <div class="f"><label for="n-exp">Must record by</label><input id="n-exp" type="date"></div>
-      <div class="f"><label for="n-escrow">Title / escrow</label><input id="n-escrow" placeholder="optional"></div>
-      <div class="f"><label for="n-exit">Exit strategy</label><select id="n-exit">
+  <div class="panel hidden" id="addPanel">
+    <h2>New closing</h2>
+    <div class="fields">
+      <div class="field"><label for="n-addr">Address</label><input id="n-addr" placeholder="1420 Bayshore Ave"></div>
+      <div class="field"><label for="n-owner">Owner (one name)</label><input id="n-owner" placeholder="who confirms it"></div>
+      <div class="field"><label for="n-exp">Must record by</label><input id="n-exp" type="date"></div>
+      <div class="field"><label for="n-escrow">Title / escrow</label><input id="n-escrow" placeholder="optional"></div>
+      <div class="field"><label for="n-exit">Exit strategy</label><select id="n-exit">
         <option>Wholesale- Assignment</option>
         <option>Wholesale- Double Close</option>
         <option>Buy- Wholetail</option>
@@ -213,21 +391,21 @@
         <option>Sale- Wholetail</option>
         <option>Sale- Fix &amp; Flip</option></select></div>
     </div>
-    <p class="warn hidden" id="addWarn" style="padding:10px 0 0"></p>
-    <div class="go-row">
-      <button class="b go" id="saveNew" type="button">Put it on the board</button>
-      <button class="b ghost" id="cancelNew" type="button">Cancel</button>
+    <p class="warn hidden" id="addWarn"></p>
+    <div class="panel-actions">
+      <button class="btn btn-primary" id="saveNew" type="button">Add to board</button>
+      <button class="btn btn-quiet" id="cancelNew" type="button">Cancel</button>
     </div>
   </div>
 
-  <div id="ledger"></div>
+  <div class="ledger" id="ledger"></div>
 
   <div class="empty hidden" id="empty">
-    <p>Board is empty</p>
-    <p class="sub">Every open closing goes here with one owner and a hard record-by date. Everyone you send this link to sees the same board, live.</p>
-    <div class="row-btns">
-      <button class="b" id="emptyAdd" type="button">Add a closing</button>
-      <button class="b ghost" id="emptyDemo" type="button">Load example row</button>
+    <h2>Add your first closing</h2>
+    <p>Add each open closing with one owner and a hard record-by date. Everyone you share this link with sees the same board, live.</p>
+    <div class="empty-actions">
+      <button class="btn btn-primary" id="emptyAdd" type="button">Add closing</button>
+      <button class="btn btn-quiet" id="emptyDemo" type="button">Load example</button>
     </div>
   </div>
 
@@ -238,12 +416,11 @@
 (function(){
   "use strict";
 
-  var DB=null, DL=null, unsub=null;
+  var DB=null, DL=null;
   var LOCAL="closings:v2", NAMEKEY="closings:me";
-  var state={me:"",deals:[],filter:"all",mode:"wait",shared:false,lastSync:null};
+  var state={me:"",deals:[],filter:"all",shared:false,lastSync:null};
   var drafts={}, mine={}, bumps={};
 
-  /* ---------- small helpers ---------- */
   function byId(i){return document.getElementById(i);}
   function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){
     return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
@@ -254,27 +431,29 @@
   function fmtDate(iso){if(!iso)return "—";var p=String(iso).slice(0,10).split("-");
     if(p.length<3)return iso;return MON[+p[1]-1]+" "+(+p[2]);}
   function fmtStamp(iso){if(!iso)return "—";var d=new Date(iso);if(isNaN(d))return String(iso);
-    return fmtDate(String(iso).slice(0,10))+" "+d.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});}
+    return fmtDate(String(iso).slice(0,10))+", "+d.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});}
   function sheetStamp(iso){if(!iso)return "";var d=new Date(iso);if(isNaN(d))return String(iso);
     return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+" "+pad(d.getHours())+":"+pad(d.getMinutes());}
   function late(iso){if(!iso)return 0;
     return Math.round((new Date(todayISO()+"T00:00:00")-new Date(String(iso).slice(0,10)+"T00:00:00"))/86400000);}
   function ago(t){if(!t)return "";var s=Math.round((Date.now()-t)/1000);
-    if(s<5)return "just now";if(s<60)return s+"s ago";if(s<3600)return Math.round(s/60)+"m ago";
-    return Math.round(s/3600)+"h ago";}
+    if(s<10)return "just now";if(s<60)return s+" seconds ago";
+    if(s<3600)return Math.round(s/60)+" min ago";return Math.round(s/3600)+" hr ago";}
   function toast(m){var t=document.createElement("div");t.className="toast";t.textContent=m;
-    document.body.appendChild(t);setTimeout(function(){t.remove();},3000);}
+    document.body.appendChild(t);setTimeout(function(){t.remove();},3200);}
   function copy(t){if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(t).then(function(){toast("COPIED — SEND IT");},function(){toast("COPY BLOCKED IN THIS VIEW");});
-    }else toast("COPY BLOCKED IN THIS VIEW");}
+      navigator.clipboard.writeText(t).then(function(){toast("Copied — send it to the team");},
+        function(){toast("Copying is blocked in this view");});
+    }else toast("Copying is blocked in this view");}
   function find(id){for(var i=0;i<state.deals.length;i++)if(state.deals[i].id===id)return state.deals[i];return null;}
   function clone(o){return JSON.parse(JSON.stringify(o));}
+  function plural(n,w){return n+" "+w+(n===1?"":"s");}
 
-  /* ---------- deal shape ---------- */
   function newDeal(f){
     return {id:uid(),addr:f.addr,owner:f.owner,expected:f.expected,escrow:f.escrow||"",exit:f.exit,
-      funded:null,recorded:null,crm:null,notified:null,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),
-      log:[{at:new Date().toISOString(),text:"On the board. Owner: "+f.owner+". Must record by "+fmtDate(f.expected)+"."}]};
+      funded:null,recorded:null,crm:null,notified:null,
+      createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),
+      log:[{at:new Date().toISOString(),text:"Added to the board. Owner: "+f.owner+". Must record by "+fmtDate(f.expected)+"."}]};
   }
   function stateOf(d){
     if(d.recorded) return (d.crm&&d.notified)?"closed":"recorded";
@@ -282,18 +461,20 @@
     if(d.funded) return "funded";
     return "escrow";
   }
-  var FLAG={issue:"NOT RECORDED",funded:"FUNDED, NOT RECORDED",escrow:"IN ESCROW",recorded:"RECORDED",closed:"CLOSED"};
-  var RANK={issue:0,funded:1,escrow:2,recorded:3,closed:4};
+  var PILL={issue:"Not recorded",funded:"Funded, not recorded",escrow:"In escrow",recorded:"Recorded",closed:"Closed"};
   var WORD={issue:"Late, not recorded",funded:"Funded, not recorded",escrow:"In escrow",recorded:"Recorded",closed:"Closed"};
+  var RANK={issue:0,funded:1,escrow:2,recorded:3,closed:4};
 
-  function list(){
+  function ordered(){
     return state.deals.slice().sort(function(a,b){
       var r=RANK[stateOf(a)]-RANK[stateOf(b)];
-      return r?r:((a.expected||"9999")<(b.expected||"9999")?-1:1);
-    }).filter(function(d){var s=stateOf(d);
-      if(state.filter==="hot")return s==="issue"||s==="recorded";
-      if(state.filter==="open")return s==="issue"||s==="funded"||s==="escrow";
-      if(state.filter==="done")return s==="recorded"||s==="closed";
+      return r?r:((a.expected||"9999")<(b.expected||"9999")?-1:1);});
+  }
+  function list(){
+    return ordered().filter(function(d){var s=stateOf(d);
+      if(state.filter==="late")return s==="issue";
+      if(state.filter==="waiting")return s==="funded"||s==="escrow";
+      if(state.filter==="recorded")return s==="recorded"||s==="closed";
       return true;});
   }
   function logIt(d,t){
@@ -301,27 +482,22 @@
     if(d.log.length>200)d.log=d.log.slice(d.log.length-200);
   }
 
-  /* ---------- persistence ---------- */
-  function saveLocal(){
-    try{window.localStorage.setItem(LOCAL,JSON.stringify(state.deals));}catch(e){}
-  }
-  function loadLocal(){
-    try{var v=window.localStorage.getItem(LOCAL);
-      if(v){var a=JSON.parse(v);if(Array.isArray(a))state.deals=a;}}catch(e){}
-  }
+  function saveLocal(){try{window.localStorage.setItem(LOCAL,JSON.stringify(state.deals));}catch(e){}}
+  function loadLocal(){try{var v=window.localStorage.getItem(LOCAL);
+    if(v){var a=JSON.parse(v);if(Array.isArray(a))state.deals=a;}}catch(e){}}
   function dbMsg(e){
     var c=e&&e.code;
-    if(c==="quota_exceeded")return "BOARD IS FULL — REMOVE OLD CLOSINGS FIRST";
-    if(c==="resource_exhausted")return "TOO MANY CHANGES AT ONCE — WAIT A SECOND AND REDO IT";
-    if(c==="revoked"||c==="not_granted")return "YOU LOST ACCESS TO THIS BOARD — REOPEN THE LINK";
-    if(c==="invalid_argument")return "THAT CHANGE WAS REJECTED — REDO IT";
-    return "SAVE DIDN'T REACH THE BOARD — REDO IT";
+    if(c==="quota_exceeded")return "The board is full — remove old closings first";
+    if(c==="resource_exhausted")return "Too many changes at once — wait a moment and redo it";
+    if(c==="revoked"||c==="not_granted")return "You lost access to this board — reopen the link";
+    if(c==="invalid_argument")return "That change was rejected — redo it";
+    return "That change didn't reach the board — redo it";
   }
   function push(d){
     d.updatedAt=new Date().toISOString();
     if(DB){
       mine[d.id]=Date.now();
-      var body=clone(d); delete body.id;
+      var body=clone(d);delete body.id;
       DB.doc("deals/"+d.id).set(body).catch(function(e){toast(dbMsg(e));});
     }else saveLocal();
     render();
@@ -333,18 +509,16 @@
     render();
   }
 
-  /* ---------- copy-out text ---------- */
   function closedText(d){
-    return "CLOSED — "+d.addr+".\nRecorded "+fmtDate(d.recorded.date)+", doc #"+d.recorded.doc+
+    return "Closed — "+d.addr+".\nRecorded "+fmtDate(d.recorded.date)+", doc #"+d.recorded.doc+
       ".\nConfirmed by "+d.recorded.by+" ("+d.recorded.source+")."+(d.crm?"\nCRM updated.":"");
   }
   function escText(d){
     var n=late(d.expected);
-    return "OPEN ISSUE — "+d.addr+".\nWas due to record "+fmtDate(d.expected)+". Still not recorded. "+n+" day"+(n===1?"":"s")+" late.\nOwner: "+d.owner+
-      (d.escrow?" · "+d.escrow:"")+".\nToday: "+d.owner+" gets written confirmation from title/escrow — doc number or a new recording date. This is NOT closed.";
+    return "Open issue — "+d.addr+".\nWas due to record "+fmtDate(d.expected)+". Still not recorded, "+plural(n,"day")+" late.\nOwner: "+d.owner+
+      (d.escrow?" · "+d.escrow:"")+".\nToday: "+d.owner+" gets written confirmation from title/escrow — an instrument number or a new recording date. This is not closed.";
   }
 
-  /* ---------- drafts + focus survive live re-renders ---------- */
   function draft(id){
     if(!drafts[id])drafts[id]={doc:"",date:todayISO(),source:"recorded copy"};
     return drafts[id];
@@ -352,22 +526,19 @@
   function snapFocus(){
     var a=document.activeElement;
     if(!a||!a.closest||!a.dataset||!a.dataset.f)return null;
-    var r=a.closest(".row");if(!r)return null;
+    var r=a.closest(".deal");if(!r)return null;
     var s=null;try{s=a.selectionStart;}catch(e){}
     return {id:r.dataset.id,f:a.dataset.f,s:s};
   }
   function restoreFocus(f){
     if(!f)return;
-    var el=document.querySelector('.row[data-id="'+f.id+'"] [data-f="'+f.f+'"]');
+    var el=document.querySelector('.deal[data-id="'+f.id+'"] [data-f="'+f.f+'"]');
     if(!el)return;
     el.focus();
     if(f.s!=null&&el.setSelectionRange){try{el.setSelectionRange(f.s,f.s);}catch(e){}}
   }
+  function setLive(mode,txt){byId("live").dataset.m=mode;byId("liveTxt").textContent=txt;}
 
-  /* ---------- render ---------- */
-  function setLive(mode,txt){
-    var el=byId("live");el.dataset.m=mode;byId("liveTxt").textContent=txt;
-  }
   function render(){
     var focus=snapFocus();
     if(byId("me").value!==state.me)byId("me").value=state.me;
@@ -375,81 +546,80 @@
     var L=0,W=0,G=0;
     state.deals.forEach(function(d){var s=stateOf(d);
       if(s==="issue")L++;else if(s==="funded"||s==="escrow")W++;else G++;});
-    byId("tLate").textContent=L;byId("tWait").textContent=W;byId("tGood").textContent=G;
+    byId("cAll").textContent=state.deals.length;
+    byId("cLate").textContent=L;byId("cWait").textContent=W;byId("cGood").textContent=G;
 
     var v=byId("verdict"),sub=byId("vsub");
-    v.className="verdict";
     if(!state.deals.length){
-      v.textContent="NOTHING ON THE BOARD";
-      sub.textContent="Every open closing goes here with one owner and a hard date.";
+      v.textContent="No closings on the board yet";
+      sub.textContent="Add each open closing with one owner and a hard record-by date.";
     }else if(L){
-      v.classList.add("hot");
-      v.textContent=L+" DEAL"+(L===1?"":"S")+" LATE AND NOT RECORDED";
-      sub.textContent="Escalate now. Nobody calls these closed.";
+      v.innerHTML='<span class="n-late">'+L+'</span> '+(L===1?"closing is":"closings are")+' late and not recorded';
+      sub.textContent="Escalate today. None of these are closed until the deed records.";
     }else if(W){
-      v.textContent=W+" WAITING ON RECORDING";
-      sub.textContent="No doc number, no close. Nothing is late.";
+      v.innerHTML='<span class="n-wait">'+W+'</span> '+(W===1?"closing is":"closings are")+' waiting on recording';
+      sub.textContent="Nothing is late yet. No instrument number means not closed.";
     }else{
-      v.classList.add("ok");
-      v.textContent="ALL RECORDED";
-      sub.textContent="Every deal on the board has a doc number and a name on it.";
+      v.innerHTML='<span class="n-good">Every closing</span> on the board has recorded';
+      sub.textContent="Each one has an instrument number and a name against it.";
     }
 
     byId("empty").classList.toggle("hidden",state.deals.length>0);
     var arr=list(),out="";
-    for(var i=0;i<arr.length;i++)out+=row(arr[i]);
+    for(var i=0;i<arr.length;i++)out+=card(arr[i]);
     byId("ledger").innerHTML=out;
 
     Object.keys(bumps).forEach(function(id){
-      var el=document.querySelector('.row[data-id="'+id+'"]');
-      if(el)el.classList.add("bump");
-    });
+      var el=document.querySelector('.deal[data-id="'+id+'"]');
+      if(el)el.classList.add("bump");});
     bumps={};
 
     restoreFocus(focus);
     foot();
   }
 
-  function row(d){
-    var s=stateOf(d),n=(s==="issue")?late(d.expected):0,dr=draft(d.id);
+  function card(d){
+    var s=stateOf(d),n=(s==="issue")?late(d.expected):0,dr=draft(d.id),id=esc(d.id);
     var meta=["Owner <b>"+esc(d.owner)+"</b>"];
-    meta.push(d.recorded?("Recorded <b>"+esc(fmtDate(d.recorded.date))+"</b>"):("Due <b>"+esc(fmtDate(d.expected))+"</b>"));
+    meta.push(d.recorded?("Recorded <b>"+esc(fmtDate(d.recorded.date))+"</b>")
+                        :("Due <b>"+esc(fmtDate(d.expected))+"</b>"));
     if(d.escrow)meta.push(esc(d.escrow));
     if(d.exit||d.side)meta.push(esc(d.exit||d.side));
 
-    var h='<article class="row" data-s="'+s+'" data-id="'+esc(d.id)+'">';
-    h+='<div class="head"><div><div class="addr">'+esc(d.addr)+'</div><div class="meta">'+meta.join(" &nbsp;·&nbsp; ")+'</div></div>';
-    h+='<div class="flag" data-s="'+s+'">'+FLAG[s]+(n>0?" · "+n+"D LATE":"")+'</div></div>';
+    var h='<article class="deal" data-s="'+s+'" data-id="'+id+'">';
+    h+='<div class="deal-head"><div><h2 class="addr">'+esc(d.addr)+'</h2>'+
+       '<div class="meta"><span>'+meta.join('</span><span>')+'</span></div></div>'+
+       '<span class="pill" data-s="'+s+'">'+PILL[s]+(n>0?" · "+plural(n,"day")+" late":"")+'</span></div>';
 
     if(!d.recorded){
-      h+='<div class="act">';
-      h+='<div class="f"><label for="doc-'+esc(d.id)+'">Doc / instrument #</label>'+
-         '<input class="doc" id="doc-'+esc(d.id)+'" data-f="doc" placeholder="2026-041877" value="'+esc(dr.doc)+'"></div>';
-      h+='<div class="f narrow"><label for="date-'+esc(d.id)+'">Recorded on</label>'+
-         '<input type="date" id="date-'+esc(d.id)+'" data-f="date" value="'+esc(dr.date)+'"></div>';
-      h+='<div class="f narrow"><label for="src-'+esc(d.id)+'">Proof</label><select id="src-'+esc(d.id)+'" data-f="source">';
+      h+='<div class="deal-body"><div class="fields">';
+      h+='<div class="field"><label for="doc-'+id+'">Doc / instrument #</label>'+
+         '<input class="mono" id="doc-'+id+'" data-f="doc" placeholder="2026-041877" value="'+esc(dr.doc)+'"></div>';
+      h+='<div class="field"><label for="date-'+id+'">Recorded on</label>'+
+         '<input type="date" id="date-'+id+'" data-f="date" value="'+esc(dr.date)+'"></div>';
+      h+='<div class="field"><label for="src-'+id+'">Proof</label><select id="src-'+id+'" data-f="source">';
       ["recorded copy","title confirmation","escrow confirmation","county record"].forEach(function(o){
         h+='<option'+(dr.source===o?' selected':'')+'>'+o+'</option>';});
-      h+='</select></div>';
-      h+='<button class="b go" type="button" data-act="record">Confirm recorded</button>';
-      if(!d.funded)h+='<button class="b ghost" type="button" data-act="funded">Funded</button>';
-      if(s==="issue")h+='<button class="b hot" type="button" data-act="esc">Escalate</button>';
-      h+='</div>';
-      h+='<p class="warn hidden" data-warn></p>';
+      h+='</select></div></div>';
+      h+='<div class="deal-actions"><button class="btn btn-good" type="button" data-act="record">Confirm recorded</button>';
+      if(!d.funded)h+='<button class="btn btn-quiet" type="button" data-act="funded">Mark funded</button>';
+      if(s==="issue")h+='<button class="btn btn-danger" type="button" data-act="esc">Escalate</button>';
+      h+='</div><p class="warn hidden" data-warn></p></div>';
     }else{
-      h+='<div class="stamped"><span class="num">DOC #'+esc(d.recorded.doc)+'</span> · '+esc(fmtDate(d.recorded.date))+
-         '<small>Confirmed by '+esc(d.recorded.by)+' · '+esc(d.recorded.source)+' · '+esc(fmtStamp(d.recorded.at))+'</small></div>';
-      h+='<div class="act">';
-      h+='<button class="b" type="button" data-act="copy">Copy team text</button>';
-      if(!d.crm)h+='<button class="b ghost" type="button" data-act="crm">CRM updated</button>';
-      if(!d.notified)h+='<button class="b ghost" type="button" data-act="notified">Team notified</button>';
+      h+='<div class="stamp"><span class="docno">#'+esc(d.recorded.doc)+'</span>'+
+         '<span class="on">recorded '+esc(fmtDate(d.recorded.date))+'</span>'+
+         '<span class="by">Confirmed by '+esc(d.recorded.by)+' · '+esc(d.recorded.source)+' · '+esc(fmtStamp(d.recorded.at))+'</span></div>';
+      h+='<div class="deal-actions" style="padding:0 18px 0 20px">'+
+         '<button class="btn btn-quiet btn-sm" type="button" data-act="copy">Copy update</button>';
+      if(!d.crm)h+='<button class="btn btn-quiet btn-sm" type="button" data-act="crm">CRM updated</button>';
+      if(!d.notified)h+='<button class="btn btn-quiet btn-sm" type="button" data-act="notified">Team notified</button>';
       h+='</div>';
     }
 
-    h+='<details class="log"><summary>Log ('+(d.log?d.log.length:0)+')</summary><ol>';
+    h+='<div class="deal-foot"><details class="log"><summary>Activity log ('+((d.log||[]).length)+')</summary><ol>';
     for(var i=(d.log||[]).length-1;i>=0;i--)
-      h+='<li><time>'+esc(fmtStamp(d.log[i].at))+'</time> — '+esc(d.log[i].text)+'</li>';
-    h+='</ol><p style="margin:10px 0 0"><button class="rm" type="button" data-act="rm">Remove from board</button></p></details>';
+      h+='<li><time>'+esc(fmtStamp(d.log[i].at))+'</time>'+esc(d.log[i].text)+'</li>';
+    h+='</ol></details><button class="btn-text" type="button" data-act="rm">Remove</button></div>';
     h+='</article>';
     return h;
   }
@@ -457,24 +627,21 @@
   function foot(){
     var n=state.deals.length;
     var where=state.shared
-      ? "<b>Live shared board.</b> Everyone you send this link to sees these "+n+" closing"+(n===1?"":"s")+" and every change, within seconds. No refresh."
-      : "<b>Not syncing.</b> This view can't reach the shared board, so changes are saved on this device only and nobody else sees them.";
-    var sync=state.lastSync?(" Last change received "+ago(state.lastSync)+".") : "";
+      ? "<b>Live shared board.</b> Everyone you share this link with sees these "+plural(n,"closing")+" and every change within seconds — no refresh."
+      : "<b>Not syncing.</b> This view can't reach the shared board, so changes save on this device only and nobody else sees them.";
+    var sync=state.lastSync?(" Last change received "+ago(state.lastSync)+"."):"";
     byId("foot").innerHTML=where+sync+
       "<br>Recording is the only close. Funded, signed, and “title says it’s done” are not.";
   }
 
   function needMe(){
     if(state.me.trim())return true;
-    toast("PUT YOUR NAME IN FIRST");
-    byId("me").focus();
-    return false;
+    toast("Put your name in first");byId("me").focus();return false;
   }
 
-  /* ---------- actions ---------- */
   document.addEventListener("click",function(e){
     var t=e.target.closest("[data-act]");if(!t)return;
-    var el=e.target.closest(".row"),d=el?find(el.dataset.id):null;if(!d)return;
+    var el=e.target.closest(".deal"),d=el?find(el.dataset.id):null;if(!d)return;
     var a=t.dataset.act;
 
     if(a==="funded"){
@@ -487,14 +654,14 @@
       if(!needMe())return;
       var dr=draft(d.id),w=el.querySelector("[data-warn]");
       if(!dr.doc.trim()||!dr.date){
-        w.textContent="NO DOC NUMBER, NO CLOSE. Enter the instrument number and the recording date.";
+        w.textContent="Enter the instrument number and the recording date. No instrument number, no close.";
         w.classList.remove("hidden");return;
       }
       d.recorded={at:new Date().toISOString(),by:state.me,doc:dr.doc.trim(),date:dr.date,source:dr.source};
       if(!d.funded)d.funded={at:new Date().toISOString(),by:state.me};
-      logIt(d,"RECORDED — doc #"+dr.doc.trim()+" on "+fmtDate(dr.date)+", confirmed by "+state.me+" ("+dr.source+").");
+      logIt(d,"Recorded — doc #"+dr.doc.trim()+" on "+fmtDate(dr.date)+", confirmed by "+state.me+" ("+dr.source+").");
       delete drafts[d.id];
-      push(d);toast("RECORDED — NOW TELL THE TEAM");return;
+      push(d);toast("Recorded — now tell the team");return;
     }
     if(a==="crm"){
       if(!needMe())return;
@@ -516,25 +683,21 @@
       if(t.dataset.armed!=="1"){
         t.dataset.armed="1";
         t.textContent=state.shared?"Remove for everyone — click again":"Remove — click again";
-        setTimeout(function(){if(t.isConnected){t.dataset.armed="";t.textContent="Remove from board";}},4000);
+        setTimeout(function(){if(t.isConnected){t.dataset.armed="";t.textContent="Remove";}},4000);
         return;
       }
       drop(d);return;
     }
   });
 
-  document.addEventListener("input",function(e){
+  function trackDraft(e){
     var el=e.target;
     if(!el.dataset||!el.dataset.f)return;
-    var r=el.closest(".row");if(!r)return;
+    var r=el.closest(".deal");if(!r)return;
     draft(r.dataset.id)[el.dataset.f]=el.value;
-  });
-  document.addEventListener("change",function(e){
-    var el=e.target;
-    if(!el.dataset||!el.dataset.f)return;
-    var r=el.closest(".row");if(!r)return;
-    draft(r.dataset.id)[el.dataset.f]=el.value;
-  });
+  }
+  document.addEventListener("input",trackDraft);
+  document.addEventListener("change",trackDraft);
 
   byId("me").addEventListener("input",function(e){
     state.me=e.target.value;
@@ -550,15 +713,14 @@
     var f={addr:byId("n-addr").value.trim(),owner:byId("n-owner").value.trim(),expected:byId("n-exp").value,
            escrow:byId("n-escrow").value.trim(),exit:byId("n-exit").value},w=byId("addWarn");
     if(!f.addr||!f.owner||!f.expected){
-      w.textContent="ADDRESS, ONE OWNER, AND A MUST-RECORD-BY DATE. The date is what turns the row red.";
+      w.textContent="Address, one owner, and a must-record-by date are required. The date is what turns the row red.";
       w.classList.remove("hidden");return;
     }
     w.classList.add("hidden");
     var d=newDeal(f);
     state.deals.push(d);
     ["n-addr","n-owner","n-exp","n-escrow"].forEach(function(i){byId(i).value="";});
-    showAdd(false);
-    push(d);
+    showAdd(false);push(d);
   });
 
   byId("emptyDemo").addEventListener("click",function(){
@@ -567,11 +729,10 @@
                    escrow:"Old Republic Title",exit:"Sale- Fix & Flip"});
     d.funded={at:back,by:"Cherry"};
     d.log.push({at:back,text:"Funded, confirmed by Cherry. Recording still unconfirmed."});
-    state.deals.push(d);
-    push(d);
+    state.deals.push(d);push(d);
   });
 
-  byId("tabs").addEventListener("click",function(e){
+  byId("filters").addEventListener("click",function(e){
     var b=e.target.closest("button[data-f]");if(!b)return;
     state.filter=b.dataset.f;
     Array.prototype.forEach.call(this.querySelectorAll("button"),function(x){
@@ -581,25 +742,20 @@
 
   /* ---------- spreadsheet export ---------- */
   function sheets(){
-    var rows=state.deals.slice().sort(function(a,b){
-      var r=RANK[stateOf(a)]-RANK[stateOf(b)];
-      return r?r:((a.expected||"9999")<(b.expected||"9999")?-1:1);});
-
+    var rows=ordered();
     var A=[["Address","Status","Days late","Owner","Must record by","Doc / instrument #","Recorded on",
             "Confirmed by","Proof","Confirmed at","Funded","Funded by","Title / escrow","Exit strategy",
             "CRM updated","Team notified","Added","Deal ID"]];
     rows.forEach(function(d){
       var s=stateOf(d);
-      A.push([
-        d.addr, WORD[s], (s==="issue"?late(d.expected):0), d.owner, d.expected||"",
-        d.recorded?d.recorded.doc:"", d.recorded?d.recorded.date:"",
-        d.recorded?d.recorded.by:"", d.recorded?d.recorded.source:"",
+      A.push([d.addr,WORD[s],(s==="issue"?late(d.expected):0),d.owner,d.expected||"",
+        d.recorded?d.recorded.doc:"",d.recorded?d.recorded.date:"",
+        d.recorded?d.recorded.by:"",d.recorded?d.recorded.source:"",
         d.recorded?sheetStamp(d.recorded.at):"",
-        d.funded?"Yes":"No", d.funded?(d.funded.by||""):"",
-        d.escrow||"", d.exit||d.side||"",
-        d.crm?sheetStamp(d.crm.at):"", d.notified?sheetStamp(d.notified.at):"",
-        sheetStamp(d.createdAt), d.id
-      ]);
+        d.funded?"Yes":"No",d.funded?(d.funded.by||""):"",
+        d.escrow||"",d.exit||d.side||"",
+        d.crm?sheetStamp(d.crm.at):"",d.notified?sheetStamp(d.notified.at):"",
+        sheetStamp(d.createdAt),d.id]);
     });
 
     var B=[["Address","When","Entry","Deal ID"]];
@@ -613,34 +769,32 @@
                  {wch:19},{wch:17},{wch:8},{wch:14},{wch:22},{wch:22},{wch:17},{wch:17},{wch:17},{wch:14}];
     w1["!freeze"]={xSplit:0,ySplit:1};
     XLSX.utils.book_append_sheet(wb,w1,"Closings");
-
     var w2=XLSX.utils.aoa_to_sheet(B);
     w2["!cols"]=[{wch:34},{wch:17},{wch:90},{wch:14}];
     XLSX.utils.book_append_sheet(wb,w2,"Audit log");
-
     return XLSX.write(wb,{bookType:"xlsx",type:"array"});
   }
 
   function download(){
-    if(!state.deals.length){toast("NOTHING TO DOWNLOAD YET");return;}
-    if(typeof XLSX==="undefined"){toast("SPREADSHEET TOOL DIDN'T LOAD — RELOAD THE PAGE");return;}
+    if(!state.deals.length){toast("Nothing to export yet");return;}
+    if(typeof XLSX==="undefined"){toast("The spreadsheet tool didn't load — reload the page");return;}
     var btn=byId("dl");
     btn.disabled=true;btn.textContent="Building…";
     var data;
     try{data=sheets();}
-    catch(err){btn.disabled=false;btn.textContent="Download board";toast("COULDN'T BUILD THE FILE");return;}
+    catch(err){btn.disabled=false;btn.textContent="Export .xlsx";toast("Couldn't build the file");return;}
     DL.save({filename:"recorded-board-"+todayISO()+".xlsx",data:data}).then(function(){
-      toast("DOWNLOADED — OPENS IN EXCEL OR SHEETS");
+      toast("Exported — opens in Excel or Google Sheets");
     }).catch(function(e){
       var c=e&&e.code;
-      if(c==="declined")toast("DOWNLOAD CANCELLED");
-      else if(c==="rate_limited")toast("ONE DOWNLOAD AT A TIME — TRY AGAIN IN A MOMENT");
-      else if(c==="too_large")toast("BOARD IS TOO BIG FOR ONE FILE — REMOVE CLOSED DEALS FIRST");
+      if(c==="declined")toast("Export cancelled");
+      else if(c==="rate_limited")toast("One export at a time — try again in a moment");
+      else if(c==="too_large")toast("The board is too big for one file — remove closed deals first");
       else if(c==="rejected_extension"||c==="extension_not_enabled"){
-        toast("SPREADSHEETS CAN'T BE SAVED IN THIS VIEW");btn.classList.add("hidden");
-      }else toast("DOWNLOAD DIDN'T GO THROUGH — TRY AGAIN");
+        toast("Spreadsheets can't be saved in this view");btn.classList.add("hidden");
+      }else toast("The export didn't go through — try again");
     }).then(function(){
-      btn.disabled=false;btn.textContent="Download board";
+      btn.disabled=false;btn.textContent="Export .xlsx";
     });
   }
   byId("dl").addEventListener("click",download);
@@ -649,27 +803,26 @@
   try{state.me=window.localStorage.getItem(NAMEKEY)||"";}catch(e){}
   render();
   setLive("wait","Connecting");
+  setInterval(function(){if(state.deals.length||state.lastSync)render();},30000);
 
-  setInterval(function(){
-    if(state.deals.length||state.lastSync)render();
-  },30000);
+  var use=(window.claude&&typeof window.claude.use==="function")
+    ? function(n){return window.claude.use(n);}
+    : function(){return Promise.resolve(null);};
 
-  claude.use("downloads").then(function(d){
+  use("downloads").then(function(d){
     if(!d)return;
     DL=d;byId("dl").classList.remove("hidden");
   }).catch(function(){});
 
-  claude.use("db").then(function(db){
+  use("db").then(function(db){
     if(!db){
-      state.shared=false;
-      setLive("off","This device only");
+      state.shared=false;setLive("off","This device only");
       loadLocal();render();
-      toast("NOT SYNCING — SAVED ON THIS DEVICE ONLY");
+      toast("Not syncing — changes save on this device only");
       return;
     }
-    DB=db;state.shared=true;
-    setLive("wait","Syncing");
-    unsub=DB.collection("deals").onSnapshot(function(snap){
+    DB=db;state.shared=true;setLive("wait","Syncing");
+    DB.collection("deals").onSnapshot(function(snap){
       snap.docChanges().forEach(function(c){
         if(c.type==="removed")return;
         var t=mine[c.doc.id];
@@ -682,15 +835,11 @@
         if(!Array.isArray(d.log))d.log=[];
         next.push(d);
       });
-      state.deals=next;
-      state.lastSync=Date.now();
-      setLive("live","Live");
-      render();
+      state.deals=next;state.lastSync=Date.now();
+      setLive("live","Live");render();
     },function(e){
-      state.shared=false;
-      setLive("off","Sync stopped");
-      toast(dbMsg(e)+" — RELOAD THE PAGE");
-      render();
+      state.shared=false;setLive("off","Sync stopped");
+      toast(dbMsg(e)+" — reload the page");render();
     });
   }).catch(function(){
     state.shared=false;setLive("off","This device only");loadLocal();render();
