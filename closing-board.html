@@ -4,79 +4,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
+  /* Single committed theme: this board is always dark, whatever theme
+     the viewer is in. Every color below is explicit for that reason. */
   :root{
-    color-scheme:light;
-    --bg:#F5F7F9;
-    --surface:#FFFFFF;
-    --surface-2:#F1F4F7;
-    --ink:#131820;
-    --ink-2:#3E4853;
-    --muted:#69737F;
-    --line:#E3E7EC;
-    --line-2:#D2D8E0;
-
-    --accent:#3557D8;
-    --accent-hover:#2A46B8;
-    --accent-ink:#FFFFFF;
-    --accent-soft:#E9EEFC;
-    --accent-line:#C5D2F6;
-
-    --late:#BE3A2B;
-    --late-ink:#FFFFFF;
-    --late-soft:#FBECEA;
-    --late-line:#EFCCC7;
-
-    --wait:#8F6209;
-    --wait-soft:#FBF3E1;
-    --wait-line:#EBDDBB;
-
-    --good:#15724A;
-    --good-ink:#FFFFFF;
-    --good-soft:#E6F4EC;
-    --good-line:#C2E2D1;
-
-    --shadow:0 1px 2px rgba(19,24,32,.05), 0 3px 10px rgba(19,24,32,.045);
-    --r:10px;
-    --r-sm:7px;
-    --sans:"Instrument Sans","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
-    --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
-  }
-  @media (prefers-color-scheme:dark){
-    :root:not([data-theme="light"]){
-      color-scheme:dark;
-      --bg:#0E1216;
-      --surface:#161B22;
-      --surface-2:#1D242C;
-      --ink:#E8EDF3;
-      --ink-2:#B9C3CE;
-      --muted:#8A95A2;
-      --line:#232B34;
-      --line-2:#303944;
-
-      --accent:#7A99FF;
-      --accent-hover:#93ADFF;
-      --accent-ink:#0A1024;
-      --accent-soft:#18213B;
-      --accent-line:#2B3A66;
-
-      --late:#F0897F;
-      --late-ink:#2A0D08;
-      --late-soft:#291613;
-      --late-line:#492520;
-
-      --wait:#E3B562;
-      --wait-soft:#261E10;
-      --wait-line:#443619;
-
-      --good:#5FC994;
-      --good-ink:#062017;
-      --good-soft:#112620;
-      --good-line:#1E4433;
-
-      --shadow:0 1px 2px rgba(0,0,0,.42), 0 3px 12px rgba(0,0,0,.28);
-    }
-  }
-  :root[data-theme="dark"]{
     color-scheme:dark;
     --bg:#0E1216;
     --surface:#161B22;
@@ -108,6 +38,10 @@
     --good-line:#1E4433;
 
     --shadow:0 1px 2px rgba(0,0,0,.42), 0 3px 12px rgba(0,0,0,.28);
+    --r:10px;
+    --r-sm:7px;
+    --sans:"Instrument Sans","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
   }
 
   *{box-sizing:border-box}
